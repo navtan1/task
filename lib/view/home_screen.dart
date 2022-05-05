@@ -95,6 +95,7 @@ class Header extends StatelessWidget {
             elevation: 10,
             shadowColor: Colors.black38,
             child: TextField(
+              enabled: false,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 suffixIcon: Icon(Icons.close),
@@ -155,7 +156,7 @@ class Tabs extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
-                  height: 75,
+                  height: 65,
                   width: 75,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -206,6 +207,7 @@ class Profile extends StatelessWidget {
                   crossAxisCount: 2,
                   childAspectRatio: 0.8),
               itemBuilder: (context, index) {
+                var info = snapshot.data!.users![index];
                 return Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
@@ -214,24 +216,26 @@ class Profile extends StatelessWidget {
                       SizedBox(
                         height: 120,
                         width: MediaQuery.of(context).size.width,
-                        child: Image.network(
-                          '${snapshot.data!.users![index].avatar}',
-                          fit: BoxFit.cover,
-                        ),
+                        child: info.avatar == null
+                            ? SizedBox()
+                            : Image.network(
+                                '${info.avatar}',
+                                fit: BoxFit.cover,
+                              ),
                       ),
                       SizedBox(
                         height: 5,
                       ),
                       Text(
-                        "${snapshot.data!.users![index].firstName}",
+                        "${info.firstName}",
                         style: TextStyle(fontSize: 20),
                       ),
                       SizedBox(
                         height: 2,
                       ),
                       Text(
-                        "${snapshot.data!.users![index].lastName}",
-                        style: TextStyle(color: Colors.black45),
+                        "${info.lastName}",
+                        style: TextStyle(color: Colors.black45, fontSize: 12),
                       ),
                       SizedBox(
                         height: 5,

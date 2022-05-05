@@ -1,12 +1,13 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task/constant.dart';
-import 'package:task/firebase_service/firebase_service.dart';
-import 'package:task/view/home_screen.dart';
+
+import '../firebase_service/firebase_service.dart';
+import 'bottom_bar.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -16,6 +17,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final getstorage = GetStorage();
+  bool ok = true;
   File? _image;
   final picker = ImagePicker();
 
@@ -40,7 +43,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future allUserData() async {
-    String? imageUrl = await uploadFile(_image!, "${Random().nextInt(1000)}");
+    String? imageUrl =
+        await uploadFile(_image!, "${kFirebaseAuth.currentUser!.email}");
 
     collectionReference.doc(kFirebaseAuth.currentUser!.uid).set({
       "first name": _fName.text,
@@ -614,26 +618,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: ElevatedButton(
                         onPressed: () async {
                           if (_formkey.currentState!.validate()) {
-                            bool status = await FirebaseService.signUp(
-                                password: _passWord.text, email: _email.text);
-                            if (status == true) {
-                              await allUserData().then(
-                                (value) => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeScreen(),
+                            setState(() {
+                              ok = false;
+                            });
+                            if (ok == false) {
+                              bool status = await FirebaseService.signUp(
+                                  password: _passWord.text, email: _email.text);
+                              if (status == true) {
+                                await getstorage.write("Email", _email.text);
+                                await allUserData().then(
+                                  (value) => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BottomBarScreen(),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
                             }
                           }
                         },
-                        child: Text(
-                          "Submit",
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
+                        child: ok == true
+                            ? Text(
+                                "Submit",
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 18,
+                                ),
+                              )
+                            : CircularProgressIndicator(),
                       ),
                     ),
                   ],

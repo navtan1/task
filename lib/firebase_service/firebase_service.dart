@@ -11,4 +11,8 @@ class FirebaseService {
     );
     return true;
   }
+
+  static Future logOut() async {
+    await kFirebaseAuth.signOut();
+  }
 }

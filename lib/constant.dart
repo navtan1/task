@@ -8,4 +8,5 @@ FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
 CollectionReference collectionReference = firebaseFirestore.collection("user");
 
-firebase_firestorage.FirebaseStorage storage = firebase_firestorage.FirebaseStorage.instance;
+firebase_firestorage.FirebaseStorage storage =
+    firebase_firestorage.FirebaseStorage.instance;

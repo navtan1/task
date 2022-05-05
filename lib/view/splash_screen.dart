@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:task/view/bottom_bar.dart';
 import 'package:task/view/sign_up_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,17 +13,30 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  String? uId;
+
   @override
   void initState() {
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SignUpScreen(),
-        ),
-      );
-    });
+    userId().whenComplete(() => Timer(Duration(seconds: 3), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  uId == null ? SignUpScreen() : BottomBarScreen(),
+            ),
+          );
+        }));
     super.initState();
+  }
+
+  final getStorage = GetStorage();
+
+  Future userId() async {
+    String userId = await getStorage.read("Email");
+
+    setState(() {
+      uId = userId;
+    });
   }
 
   @override

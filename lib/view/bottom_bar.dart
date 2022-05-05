@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task/controller/bottom_bar.dart';
 import 'package:task/view/home_screen.dart';
+import 'package:task/view/profile_screen.dart';
 
 class BottomBarScreen extends StatelessWidget {
   BottomBarScreen({Key? key}) : super(key: key);
@@ -21,45 +22,45 @@ class BottomBarScreen extends StatelessWidget {
     Container(),
     Container(),
     Container(),
-    Container(),
+    ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
-          height: 70,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.black12,
-          ),
-          child: Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(
-                icons.length,
-                (index) => GestureDetector(
-                  onTap: () {
-                    bottomBar.changeIndex(index);
-                  },
-                  child: bottomBar.bottomIndex == index
-                      ? CircleAvatar(
-                          backgroundColor: Colors.teal,
-                          child: Icon(
-                            icons[index],
-                            size: 25,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Icon(
-                          icons[index],
-                          size: 25,
-                          color: Colors.black45,
-                        ),
-                ),
-              ),
-            ),
-          )),
+        height: 70,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.black12,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(
+              icons.length,
+              (index) => Obx(
+                    () => GestureDetector(
+                      onTap: () {
+                        bottomBar.changeIndex(index);
+                      },
+                      child: bottomBar.bottomIndex.value == index
+                          ? CircleAvatar(
+                              backgroundColor: Colors.teal,
+                              child: Icon(
+                                icons[index],
+                                size: 25,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Icon(
+                              icons[index],
+                              size: 25,
+                              color: Colors.black45,
+                            ),
+                    ),
+                  )),
+        ),
+      ),
       body: Obx(() => screen[bottomBar.bottomIndex.value]),
     );
   }
